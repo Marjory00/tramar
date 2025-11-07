@@ -1,22 +1,22 @@
-
-// Routes for user management
 const express = require('express');
-const router = express.Router();
 const { 
   registerUser, 
   loginUser, 
   getUserProfile, 
-  updateUserProfile 
-} = require('../controllers/authController');
-const { protect } = require('../middleware/auth');
+  getUsers 
+} = require('../controllers/userController');
+const { protect, admin } = require('../middleware/auth');
 
-// Public routes
+const router = express.Router();
+
+// Public Routes
 router.post('/register', registerUser);
 router.post('/login', loginUser);
 
-// Protected routes
-router.route('/profile')
-  .get(protect, getUserProfile)
-  .put(protect, updateUserProfile);
+// Private/Protected Routes
+router.route('/profile').get(protect, getUserProfile); // User Registration Feature
+
+// Admin Routes (Admin Dashboard Access)
+router.route('/').get(protect, admin, getUsers); // Admin feature: List all users
 
 module.exports = router;
