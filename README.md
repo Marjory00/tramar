@@ -1,23 +1,42 @@
+# 💻 Tramar: Custom PC Builder & Parts Retailer
 
-# 🛍️ Tramar: Next-Generation E-Commerce Platform
-
-## 🌟 Case Study: The Tramar Platform
+## 🌟 Case Study: The Tramar Platform - Special Edition
 
 ### Problem
-Modern shoppers demand a seamless, fast, and secure online purchasing experience. Existing e-commerce solutions often suffer from poor performance, complex checkout flows, or weak security, leading to high cart abandonment rates. For businesses, managing product inventory and sales data across fragmented systems is a major pain point.
+The PC parts retail market is complex, fraught with **compatibility headaches** (e.g., CPU socket vs. Motherboard chipset) and frequent **stock shortages** of high-demand items. Existing e-commerce solutions treat all items equally, failing to provide the crucial technical guidance shoppers need, leading to high return rates and poor user experience.
 
 ### Solution
-**Tramar** is a robust, full-stack e-commerce application built on the **MERN stack** (MongoDB, Express, React, Node.js). It delivers a high-performance, single-page application (SPA) experience for customers and a secure, dedicated Admin Dashboard for product management.
+**Tramar** has been specialized into a custom PC builder and parts retailer built on the **MERN stack** (MongoDB, Express, React, Node.js). It provides robust e-commerce foundations alongside **advanced logic** to ensure component compatibility and offer proactive **stock alerts** for customers.
 
-### Key Features
+### Key Features (Specialized)
 
 | Feature Area | Description | Implementation Details |
 | :--- | :--- | :--- |
-| **Product Listings** | Dynamic catalog display, product detail pages, and search/filtering capabilities. | Frontend: **React Pages**; Backend: **Product Controller** with query support. |
-| **Shopping Cart** | Persistent, user-specific cart functionality allowing items to be added, updated, and removed. | Dedicated **Cart Model** and **Cart Controller** to manage state server-side. |
-| **User Authentication** | Secure user registration, login, and profile management. | **JWT** for stateless authorization; **Bcrypt** for password hashing. |
-| **Admin Dashboard** | **Role-based access control** for administrators to manage the entire product catalog. | **`admin` middleware** protects all product CRUD routes. |
+| **PC Compatibility Checker** | Automatically scans items in the cart (e.g., CPU, Motherboard, RAM) and warns the user about technical mismatches. | Custom backend **`checkCompatibility` API route** leveraging specialized `compatibilityKey` fields in the Mongoose Model. |
+| **Stock Alert System** | Allows registered users to subscribe to alerts for out-of-stock products, notifying them when inventory returns. | Extended **`User` Model** with a `stockAlerts` array; Requires specialized **`subscribeToAlert` API route**. |
+| **Product Attributes** | Products are categorized with technical fields like `Socket Type`, `Memory Type`, and `Wattage`. | Enhanced **`Product` Mongoose Schema** with specialized validation and data fields. |
+| **Product Variants** | Management of products with minor differences (e.g., RAM size: 8GB, 16GB, 32GB) under a single parent SKU. | Utilizes the `variant` field in the Product Model for display and inventory control. |
+| **Admin Dashboard** | **Role-based access control** for administrators to manage the entire technical product catalog (CRUD). | **`admin` middleware** protects all product CRUD routes. |
 | **Payment Gateway** | Integrated with **Stripe** for secure, tokenized credit card processing during checkout. | Uses Stripe's **Payment Intents** and **Webhook** handling. |
+
+---
+
+## 🛠️ Technology Stack
+
+| Component | Technology | Role & Purpose |
+| :--- | :--- | :--- |
+| **Frontend** | **React.js** | Building the User Interface as a fast Single-Page Application (SPA). |
+| **State** | **React Context API** | Application-wide state management (Authentication, Cart). |
+| **Backend** | **Node.js & Express.js** | Fast, non-blocking runtime environment for the RESTful API and custom logic. |
+| **Database** | **MongoDB & Mongoose** | Flexible NoSQL database for products (with technical specs), user alerts, and orders. |
+| **Security** | **JWT / Bcrypt** | Secure user authentication and password storage. |
+| **Payment** | **Stripe SDK** | Secure processing of credit card transactions. |
+
+---
+
+## 📂 Project Folder Structure
+
+The project follows a standard MERN stack monorepo, ensuring clear separation of concerns between the client and server.
 
 ---
 
@@ -40,24 +59,53 @@ The project follows a standard MERN stack monorepo, ensuring clear separation of
 
 ```
 tramar/
-├── client/                     # Frontend: React Application
-│   ├── src/                    
-│   │   ├── components/         # Reusable UI elements (Header, Forms)
-│   │   ├── pages/              # Route components (HomePage, AdminDashboard)
-│   │   ├── context/            # Global state (AuthContext, CartContext)
-│   │   └── services/           # Centralized API logic (apiService.js)
-│   └── package.json            
+├── client/                                 # 🖥️ FRONTEND: React Application
+│   ├── public/                             # Static assets (index.html, favicon)
+│   ├── src/
+│   │   ├── components/                     # 🧩 Reusable UI Components
+│   │   │   ├── layout/                     # Global parts (Header, Footer, MainNav)
+│   │   │   ├── forms/                      # Generic form elements (InputField, Button)
+│   │   │   ├── product/                    # Specific product-related UI (ProductCard, AlertButton)
+│   │   │   └── routes/                     # Custom route wrappers (ProtectedRoute)
+│   │   ├── context/                        # 🔑 Global State Management
+│   │   │   ├── AuthContext.jsx             # User authentication state (user, token)
+│   │   │   └── CartContext.jsx             # Shopping cart state
+│   │   ├── pages/                          # 📄 Route Components (Views)
+│   │   │   ├── public/                     # Pages accessible to all
+│   │   │   │   ├── HomePage.jsx
+│   │   │   │   └── ProductDetailPage.jsx
+│   │   │   ├── user/                       # Pages for logged-in users
+│   │   │   │   ├── CartPage.jsx
+│   │   │   │   └── ProfilePage.jsx
+│   │   │   └── admin/                      # Pages for administrators
+│   │   │       └── AdminDashboard.jsx      # CRUD forms for products/users
+│   │   ├── services/                       # 🌐 Centralized API Interaction
+│   │   │   ├── apiService.js               # Main Axios instance & CRUD functions
+│   │   │   └── compatibilityLogic.js       # (Optional: dedicated logic file)
+│   │   └── App.jsx                         # Main router setup
+│   │   └── index.js                        # Entry point
+│   └── package.json                        # Frontend dependencies & proxy setup
 │
-├── server/                     # Backend: Node.js/Express API
-│   ├── controllers/            # Business logic (userController, productController)
-│   ├── middleware/             # Authorization (auth.js: protect, admin)
-│   ├── models/                 # Mongoose Schemas (User.js, Product.js, Cart.js)
-│   ├── routes/                 # API Endpoints (productRoutes, userRoutes)
-│   └── server.js               # Main Express entry point
+├── server/                                 # ⚙️ BACKEND: Node.js/Express API
+│   ├── config/                             # Configuration files
+│   │   └── db.js                           # MongoDB connection setup
+│   ├── controllers/                        # 🧠 Business Logic (Request Handlers)
+│   │   ├── userController.js               # User registration, login, profile, stock alerts
+│   │   └── productController.js            # Product CRUD, **checkCompatibility**
+│   ├── middleware/                         # 🛡️ Express Middleware
+│   │   └── auth.js                         # `protect` (JWT verification), `admin` (Role check)
+│   ├── models/                             # 💾 Mongoose Schemas
+│   │   ├── User.js                         # Includes `stockAlerts` array
+│   │   └── Product.js                      # Includes `compatibilityKey`, `socketType`, etc.
+│   │   └── Cart.js                         # Schema for user shopping cart
+│   ├── routes/                             # 🛣️ API Endpoints
+│   │   ├── userRoutes.js                   # /api/users routes
+│   │   └── productRoutes.js                # /api/products routes (includes /compatibility)
+│   └── server.js                           # Main Express application entry point
 │
-├── .env                        # ⚠️ Local Environment Variables (Git Ignored)
-├── .gitignore                  
-└── package.json                # Root package.json with 'npm run dev' script
+├── .env                                    # 🤫 Environment Variables (MONGO_URI, JWT_SECRET, STRIPE_KEYS)
+├── .gitignore                              # Defines files to exclude from Git (node_modules, .env)
+└── package.json                            # Root dependencies, scripts (`npm run dev`)
 ```
 
 ---
