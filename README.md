@@ -39,13 +39,25 @@ Modern shoppers demand a seamless, fast, and secure online purchasing experience
 The project follows a standard MERN stack monorepo, ensuring clear separation of concerns between the client and server.
 
 ```
-tramar/ ├── client/ # Frontend: React Application │ ├── src/
-
-│ │ ├── components/ # Reusable UI elements │ │ ├── pages/ # Route components (HomePage, AdminDashboard) │ │ ├── context/ # Global state (AuthContext, CartContext) │ │ └── services/ # Centralized API logic (apiService.js) │ └── package.json
-
-│ ├── server/ # Backend: Node.js/Express API │ ├── controllers/ # Business logic (userController, productController) │ ├── middleware/ # Authorization (auth.js: protect, admin) │ ├── models/ # Mongoose Schemas (User.js, Product.js, Cart.js) │ ├── routes/ # API Endpoints (productRoutes, userRoutes) │ └── server.js # Main Express entry point │ ├── .env # ⚠️ Local Environment Variables (Git Ignored) ├── .gitignore
-
-└── package.json # Root package.json with 'npm run dev' script
+tramar/
+├── client/                     # Frontend: React Application
+│   ├── src/                    
+│   │   ├── components/         # Reusable UI elements (Header, Forms)
+│   │   ├── pages/              # Route components (HomePage, AdminDashboard)
+│   │   ├── context/            # Global state (AuthContext, CartContext)
+│   │   └── services/           # Centralized API logic (apiService.js)
+│   └── package.json            
+│
+├── server/                     # Backend: Node.js/Express API
+│   ├── controllers/            # Business logic (userController, productController)
+│   ├── middleware/             # Authorization (auth.js: protect, admin)
+│   ├── models/                 # Mongoose Schemas (User.js, Product.js, Cart.js)
+│   ├── routes/                 # API Endpoints (productRoutes, userRoutes)
+│   └── server.js               # Main Express entry point
+│
+├── .env                        # ⚠️ Local Environment Variables (Git Ignored)
+├── .gitignore                  
+└── package.json                # Root package.json with 'npm run dev' script
 ```
 
 ---
