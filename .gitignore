@@ -1,0 +1,62 @@
+## 🚫 Dependencies and Build Artifacts
+
+# Dependencies (Covers node_modules in root, client/, server/, and anywhere else)
+**/node_modules
+/node_modules
+
+# Yarn PnP files
+.pnp
+.pnp.js
+
+# Build artifacts, compiled output, and temporary files (in any folder)
+**/build
+**/dist
+**/out
+**/tmp
+
+# Testing and coverage reports
+/coverage
+**/coverage
+
+## 🔑 Sensitive Information
+
+# Environment variables (Crucial! Ignores .env and all local/variant files everywhere)
+**/.env*
+
+## 📦 Package Lock Files
+
+# Lock file in the main root folder (tramar/)
+package-lock.json
+yarn.lock
+
+# Lock files in nested directories are usually ignored.
+/client/package-lock.json
+/client/yarn.lock
+/server/package-lock.json
+/server/yarn.lock
+
+## 💻 OS and IDE Files
+
+# IDE and Editor specific files (Covers .vscode/ and .idea/ in any directory)
+**/.idea
+**/.vscode
+*.sublime-project
+*.sublime-workspace
+*.suo
+*.user
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+logs/
+*.log
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
