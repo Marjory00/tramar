@@ -29,6 +29,8 @@
 package-lock.json
 yarn.lock
 
+tramar/.env
+
 # Lock files in nested directories are usually ignored.
 /client/package-lock.json
 /client/yarn.lock
