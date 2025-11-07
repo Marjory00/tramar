@@ -108,7 +108,9 @@ npm run dev
 
 The server will run on http://localhost:5000 and the client application will open in your browser at http://localhost:3000.
 
-🖼️ Screenshots (Placeholders)
+```
+
+### 🖼️ Screenshots (Placeholders)
 
 Feature	Description
 Home Page	
@@ -116,7 +118,7 @@ Admin Dashboard
 Checkout Process	[Image showing the final checkout page with the integrated Stripe Elements payment form.]
 User Profile	
 
-✍️ Author & License
+### ✍️ Author & License
 
     Author: Marjory D. Marquez
 
