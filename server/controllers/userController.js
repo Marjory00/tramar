@@ -1,94 +1,199 @@
-
-const User = require('../models/User');
+const User = require('../models/UserModel'); // Adjusted import name for consistency (was 'User')
+const Product = require('../models/ProductModel'); // Need Product model to validate IDs
 const jwt = require('jsonwebtoken');
+const asyncHandler = require('express-async-handler'); // For simplifying error handling
 
 // Helper function to generate JWT
 const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '30d' });
+    return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '30d' });
 };
 
 // @desc    Register a new user
 // @route   POST /api/users/register
 // @access  Public
-exports.registerUser = async (req, res) => {
-  const { name, email, password } = req.body;
-  if (!name || !email || !password) {
-    return res.status(400).json({ success: false, error: 'Please enter all fields' });
-  }
+const registerUser = asyncHandler(async (req, res) => {
+    const { name, email, password } = req.body;
+    
+    if (!name || !email || !password) {
+        res.status(400);
+        throw new Error('Please enter all fields');
+    }
 
-  const userExists = await User.findOne({ email });
-  if (userExists) {
-    return res.status(400).json({ success: false, error: 'User already exists' });
-  }
+    const userExists = await User.findOne({ email });
+    if (userExists) {
+        res.status(400);
+        throw new Error('User already exists');
+    }
 
-  const user = await User.create({ name, email, password });
+    const user = await User.create({ name, email, password });
 
-  if (user) {
-    res.status(201).json({
-      success: true,
-      data: {
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        token: generateToken(user._id),
-      },
-    });
-  } else {
-    res.status(400).json({ success: false, error: 'Invalid user data' });
-  }
-};
+    if (user) {
+        res.status(201).json({
+            success: true,
+            data: {
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                role: user.role,
+                alerts: user.alerts, // Include alerts in the response
+                token: generateToken(user._id),
+            },
+        });
+    } else {
+        res.status(400);
+        throw new Error('Invalid user data');
+    }
+});
 
 // @desc    Authenticate user & get token (Login)
 // @route   POST /api/users/login
 // @access  Public
-exports.loginUser = async (req, res) => {
-  const { email, password } = req.body;
-  // Use .select('+password') to retrieve the password hash for comparison
-  const user = await User.findOne({ email }).select('+password');
+const loginUser = asyncHandler(async (req, res) => {
+    const { email, password } = req.body;
+    
+    const user = await User.findOne({ email }).select('+password');
 
-  if (user && (await user.matchPassword(password))) {
-    res.json({
-      success: true,
-      data: {
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        token: generateToken(user._id),
-      },
-    });
-  } else {
-    res.status(401).json({ success: false, error: 'Invalid email or password' });
-  }
-};
+    if (user && (await user.matchPassword(password))) {
+        res.json({
+            success: true,
+            data: {
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                role: user.role,
+                alerts: user.alerts, // Include alerts in the response
+                token: generateToken(user._id),
+            },
+        });
+    } else {
+        res.status(401);
+        throw new Error('Invalid email or password');
+    }
+});
 
 // @desc    Get logged in user profile
 // @route   GET /api/users/profile
-// @access  Private (Requires JWT via 'protect' middleware)
-exports.getUserProfile = async (req, res) => {
-  // req.user is populated by the 'protect' middleware
-  const user = await User.findById(req.user._id);
+// @access  Private
+const getUserProfile = asyncHandler(async (req, res) => {
+    const user = await User.findById(req.user._id).select('-password');
 
-  if (user) {
-    res.json({
-      success: true,
-      data: {
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-      },
-    });
-  } else {
-    res.status(404).json({ success: false, error: 'User not found' });
-  }
-};
+    if (user) {
+        res.json({
+            success: true,
+            data: {
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                role: user.role,
+                alerts: user.alerts, // Include alerts in the profile response
+            },
+        });
+    } else {
+        res.status(404);
+        throw new Error('User not found');
+    }
+});
 
 // @desc    Admin: Get all users
 // @route   GET /api/users
-// @access  Private/Admin (Requires 'protect' and 'admin' middleware)
-exports.getUsers = async (req, res) => {
-  const users = await User.find({});
-  res.json({ success: true, count: users.length, data: users });
+// @access  Private/Admin
+const getUsers = asyncHandler(async (req, res) => {
+    const users = await User.find({}).select('-password');
+    res.json({ success: true, count: users.length, data: users });
+});
+
+
+// ----------------------------------------------------
+// --- NEW STOCK ALERT SYSTEM FUNCTIONS ---
+// ----------------------------------------------------
+
+// @desc    Subscribe user to a product stock alert
+// @route   POST /api/users/alerts/:productId
+// @access  Private
+const subscribeToAlert = asyncHandler(async (req, res) => {
+    const { productId } = req.params;
+    const userId = req.user._id;
+
+    if (!productId) {
+        res.status(400);
+        throw new Error('Product ID is required.');
+    }
+
+    // 1. Check if the product exists
+    const product = await Product.findById(productId);
+    if (!product) {
+        res.status(404);
+        throw new Error('Product not found.');
+    }
+
+    // 2. Find the user
+    const user = await User.findById(userId);
+
+    if (user) {
+        // 3. Check if the user is already subscribed
+        const isSubscribed = user.alerts.some(alert => alert.product.toString() === productId);
+
+        if (isSubscribed) {
+            res.status(400);
+            throw new Error('Already subscribed to this product alert.');
+        }
+
+        // 4. Add the product ID to the user's alerts array
+        user.alerts.push({ product: productId, dateSubscribed: Date.now() });
+        await user.save();
+
+        res.status(201).json({ 
+            success: true,
+            message: `Successfully subscribed to alerts for ${product.name}.`,
+            alerts: user.alerts 
+        });
+    } else {
+        res.status(404);
+        throw new Error('User not found.');
+    }
+});
+
+// @desc    Unsubscribe user from a product stock alert
+// @route   DELETE /api/users/alerts/:productId
+// @access  Private
+const unsubscribeFromAlert = asyncHandler(async (req, res) => {
+    const { productId } = req.params;
+    const userId = req.user._id;
+
+    // 1. Find the user
+    const user = await User.findById(userId);
+
+    if (user) {
+        // 2. Filter out the product from the user's alerts array
+        const initialAlertCount = user.alerts.length;
+        user.alerts = user.alerts.filter(alert => alert.product.toString() !== productId);
+        
+        // 3. Check if an alert was actually removed
+        if (user.alerts.length === initialAlertCount) {
+             res.status(404);
+             throw new Error('Not subscribed to this product alert.');
+        }
+
+        await user.save();
+
+        res.json({ 
+            success: true,
+            message: 'Successfully unsubscribed from the product alert.',
+            alerts: user.alerts 
+        });
+    } else {
+        res.status(404);
+        throw new Error('User not found.');
+    }
+});
+
+
+module.exports = {
+    generateToken,
+    registerUser,
+    loginUser,
+    getUserProfile,
+    getUsers,
+    subscribeToAlert,
+    unsubscribeFromAlert,
 };

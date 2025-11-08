@@ -1,6 +1,6 @@
-# 💻 Tramar: Custom PC Builder & Parts Retailer
+# Tramar: Custom PC Builder & Parts Retailer
 
-## 🌟 Case Study: The Tramar Platform - Special Edition
+##  Case Study: The Tramar Platform
 
 ### Problem
 The PC parts retail market is complex, fraught with **compatibility headaches** (e.g., CPU socket vs. Motherboard chipset) and frequent **stock shortages** of high-demand items. Existing e-commerce solutions treat all items equally, failing to provide the crucial technical guidance shoppers need, leading to high return rates and poor user experience.
@@ -29,25 +29,6 @@ The PC parts retail market is complex, fraught with **compatibility headaches** 
 | **State** | **React Context API** | Application-wide state management (Authentication, Cart). |
 | **Backend** | **Node.js & Express.js** | Fast, non-blocking runtime environment for the RESTful API and custom logic. |
 | **Database** | **MongoDB & Mongoose** | Flexible NoSQL database for products (with technical specs), user alerts, and orders. |
-| **Security** | **JWT / Bcrypt** | Secure user authentication and password storage. |
-| **Payment** | **Stripe SDK** | Secure processing of credit card transactions. |
-
----
-
-## 📂 Project Folder Structure
-
-The project follows a standard MERN stack monorepo, ensuring clear separation of concerns between the client and server.
-
----
-
-## 🛠️ Technology Stack
-
-| Component | Technology | Role & Purpose |
-| :--- | :--- | :--- |
-| **Frontend** | **React.js** | Building the User Interface as a fast Single-Page Application (SPA). |
-| **State** | **React Context API** | Application-wide state management (Authentication, Cart). |
-| **Backend** | **Node.js & Express.js** | Fast, non-blocking runtime environment for the RESTful API. |
-| **Database** | **MongoDB & Mongoose** | Flexible NoSQL database for product, user, and order persistence. |
 | **Security** | **JWT / Bcrypt** | Secure user authentication and password storage. |
 | **Payment** | **Stripe SDK** | Secure processing of credit card transactions. |
 
@@ -168,7 +149,7 @@ User Profile
 
 ### ✍️ Author & License
 
-    Author: Marjory D. Marquez
+### Author: Marjory D. Marquez
 
     GitHub Profile: Marjory00
     Codepen Profile: Marjory00
