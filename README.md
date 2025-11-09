@@ -6,7 +6,8 @@
 The PC parts retail market is complex, fraught with **compatibility headaches** (e.g., CPU socket vs. Motherboard chipset) and frequent **stock shortages** of high-demand items. Existing e-commerce solutions treat all items equally, failing to provide the crucial technical guidance shoppers need, leading to high return rates and poor user experience.
 
 ### Solution
-**Tramar** has been specialized into a custom PC builder and parts retailer built on the **MERN stack** (MongoDB, Express, React, Node.js). It provides robust e-commerce foundations alongside **advanced logic** to ensure component compatibility and offer proactive **stock alerts** for customers.
+**Tramar** is a specialized custom PC builder and parts retailer built on the **MERN stack** (MongoDB, Express, React, Node.js). It provides robust e-commerce foundations alongside advanced logic to ensure component compatibility and offer proactive stock alerts for customers. The entire interface is built using **Material UI (MUI)** for a professional, customizable, and accessible design system.
+
 
 ### Key Features (Specialized)
 
@@ -25,7 +26,7 @@ The PC parts retail market is complex, fraught with **compatibility headaches** 
 
 | Component | Technology | Role & Purpose |
 | :--- | :--- | :--- |
-| **Frontend** | **React.js** | Building the User Interface as a fast Single-Page Application (SPA). |
+| **Frontend** | **React.js & Material UI (MUI)** | Building the User Interface as a fast Single-Page Application (SPA) using Google's Material Design principles. |
 | **State** | **React Context API** | Application-wide state management (Authentication, Cart). |
 | **Backend** | **Node.js & Express.js** | Fast, non-blocking runtime environment for the RESTful API and custom logic. |
 | **Database** | **MongoDB & Mongoose** | Flexible NoSQL database for products (with technical specs), user alerts, and orders. |
