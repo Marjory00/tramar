@@ -1,5 +1,7 @@
-const User = require('../models/UserModel'); // Adjusted import name for consistency (was 'User')
-const Product = require('../models/ProductModel'); // Need Product model to validate IDs
+// tramar/server/controllers/userController.js (Revised)
+
+const User = require('../models/UserModel'); 
+const Product = require('../models/ProductModel'); 
 const jwt = require('jsonwebtoken');
 const asyncHandler = require('express-async-handler'); // For simplifying error handling
 
@@ -8,9 +10,24 @@ const generateToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '30d' });
 };
 
-// @desc    Register a new user
-// @route   POST /api/users/register
-// @access  Public
+// Helper function for consistent user response data
+const formatUserData = (user, includeToken = true) => {
+    const data = {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        alerts: user.alerts, 
+    };
+    if (includeToken) {
+        data.token = generateToken(user._id);
+    }
+    return data;
+};
+
+// @desc      Register a new user
+// @route     POST /api/users/register
+// @access    Public
 const registerUser = asyncHandler(async (req, res) => {
     const { name, email, password } = req.body;
     
@@ -28,88 +45,66 @@ const registerUser = asyncHandler(async (req, res) => {
     const user = await User.create({ name, email, password });
 
     if (user) {
-        res.status(201).json({
-            success: true,
-            data: {
-                _id: user._id,
-                name: user.name,
-                email: user.email,
-                role: user.role,
-                alerts: user.alerts, // Include alerts in the response
-                token: generateToken(user._id),
-            },
-        });
+        // 🟢 FIX 1: Simplified response body
+        res.status(201).json(formatUserData(user));
     } else {
         res.status(400);
         throw new Error('Invalid user data');
     }
 });
 
-// @desc    Authenticate user & get token (Login)
-// @route   POST /api/users/login
-// @access  Public
+// @desc      Authenticate user & get token (Login)
+// @route     POST /api/users/login
+// @access    Public
 const loginUser = asyncHandler(async (req, res) => {
     const { email, password } = req.body;
     
+    // The .select('+password') is correct and necessary if 'password' is set to select: false in the schema.
     const user = await User.findOne({ email }).select('+password');
 
     if (user && (await user.matchPassword(password))) {
-        res.json({
-            success: true,
-            data: {
-                _id: user._id,
-                name: user.name,
-                email: user.email,
-                role: user.role,
-                alerts: user.alerts, // Include alerts in the response
-                token: generateToken(user._id),
-            },
-        });
+        // 🟢 FIX 2: Simplified response body
+        res.json(formatUserData(user));
     } else {
         res.status(401);
         throw new Error('Invalid email or password');
     }
 });
 
-// @desc    Get logged in user profile
-// @route   GET /api/users/profile
-// @access  Private
+// @desc      Get logged in user profile
+// @route     GET /api/users/profile
+// @access    Private
 const getUserProfile = asyncHandler(async (req, res) => {
-    const user = await User.findById(req.user._id).select('-password');
+    // Exclude password from the final object
+    const user = await User.findById(req.user._id).select('-password'); 
 
     if (user) {
-        res.json({
-            success: true,
-            data: {
-                _id: user._id,
-                name: user.name,
-                email: user.email,
-                role: user.role,
-                alerts: user.alerts, // Include alerts in the profile response
-            },
-        });
+        // 🟢 FIX 3: Simplified response body, no token needed for profile fetch
+        res.json(formatUserData(user, false)); 
     } else {
         res.status(404);
         throw new Error('User not found');
     }
 });
 
-// @desc    Admin: Get all users
-// @route   GET /api/users
-// @access  Private/Admin
+// @desc      Admin: Get all users
+// @route     GET /api/users
+// @access    Private/Admin
 const getUsers = asyncHandler(async (req, res) => {
+    // We assume a middleware handles the Private/Admin check before this point.
     const users = await User.find({}).select('-password');
-    res.json({ success: true, count: users.length, data: users });
+    // 🟢 FIX 4: Simplified response body
+    res.json(users); 
 });
 
 
 // ----------------------------------------------------
-// --- NEW STOCK ALERT SYSTEM FUNCTIONS ---
+// --- STOCK ALERT SYSTEM FUNCTIONS ---
 // ----------------------------------------------------
 
-// @desc    Subscribe user to a product stock alert
-// @route   POST /api/users/alerts/:productId
-// @access  Private
+// @desc      Subscribe user to a product stock alert
+// @route     POST /api/users/alerts/:productId
+// @access    Private
 const subscribeToAlert = asyncHandler(async (req, res) => {
     const { productId } = req.params;
     const userId = req.user._id;
@@ -118,6 +113,12 @@ const subscribeToAlert = asyncHandler(async (req, res) => {
         res.status(400);
         throw new Error('Product ID is required.');
     }
+    
+    // Check for invalid Product ID format
+    if (!mongoose.Types.ObjectId.isValid(productId)) {
+        res.status(400);
+        throw new Error('Invalid Product ID format.');
+    }
 
     // 1. Check if the product exists
     const product = await Product.findById(productId);
@@ -125,7 +126,7 @@ const subscribeToAlert = asyncHandler(async (req, res) => {
         res.status(404);
         throw new Error('Product not found.');
     }
-
+    
     // 2. Find the user
     const user = await User.findById(userId);
 
@@ -135,15 +136,15 @@ const subscribeToAlert = asyncHandler(async (req, res) => {
 
         if (isSubscribed) {
             res.status(400);
-            throw new Error('Already subscribed to this product alert.');
+            throw new Error(`Already subscribed to alerts for ${product.name}.`);
         }
 
         // 4. Add the product ID to the user's alerts array
         user.alerts.push({ product: productId, dateSubscribed: Date.now() });
         await user.save();
-
+        
+        // 🟢 FIX 5: Simplified success response
         res.status(201).json({ 
-            success: true,
             message: `Successfully subscribed to alerts for ${product.name}.`,
             alerts: user.alerts 
         });
@@ -153,9 +154,9 @@ const subscribeToAlert = asyncHandler(async (req, res) => {
     }
 });
 
-// @desc    Unsubscribe user from a product stock alert
-// @route   DELETE /api/users/alerts/:productId
-// @access  Private
+// @desc      Unsubscribe user from a product stock alert
+// @route     DELETE /api/users/alerts/:productId
+// @access    Private
 const unsubscribeFromAlert = asyncHandler(async (req, res) => {
     const { productId } = req.params;
     const userId = req.user._id;
@@ -176,8 +177,8 @@ const unsubscribeFromAlert = asyncHandler(async (req, res) => {
 
         await user.save();
 
+        // 🟢 FIX 6: Simplified success response
         res.json({ 
-            success: true,
             message: 'Successfully unsubscribed from the product alert.',
             alerts: user.alerts 
         });

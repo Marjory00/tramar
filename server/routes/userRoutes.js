@@ -1,38 +1,43 @@
+// tramar/server/routes/userRoutes.js
+
 const express = require('express');
+const router = express.Router();
 const { 
-  registerUser, 
-  loginUser, 
-  getUserProfile, 
-  getUsers,
-  subscribeToAlert,   // <-- NEW: Import subscribe function
-  unsubscribeFromAlert // <-- NEW: Import unsubscribe function
+    registerUser, 
+    loginUser, 
+    getUserProfile, 
+    getUsers,
+    subscribeToAlert, 
+    unsubscribeFromAlert 
 } = require('../controllers/userController');
 const { protect, admin } = require('../middleware/auth');
 
-const router = express.Router();
+// --- Public Routes ---
+// For registration and authentication (login)
+router.post('/register', registerUser); // @route POST /api/users/register
+router.post('/login', loginUser);       // @route POST /api/users/login
 
-// Public Routes
-router.post('/register', registerUser);
-router.post('/login', loginUser);
+// --- Protected Routes (Profile & Admin List) ---
 
-// Private/Protected Routes
-router.route('/profile').get(protect, getUserProfile); // User Profile
+router.route('/')
+    // @route GET /api/users (Admin feature: List all users)
+    // @access Private/Admin
+    .get(protect, admin, getUsers); 
+    // 🟢 FIX 1: Grouped the Admin GET route onto the base '/' route
 
-// ----------------------------------------------------
-// --- NEW STOCK ALERT ROUTES ---
-// ----------------------------------------------------
+router.route('/profile')
+    // @route GET /api/users/profile (Get logged-in user profile)
+    // @access Private
+    .get(protect, getUserProfile); 
 
-// Subscribe user to a product alert
+// --- Stock Alert Routes ---
+
+// @route POST /api/users/alerts/:productId (Subscribe to alert)
+// @access Private
 router.post('/alerts/:productId', protect, subscribeToAlert); 
 
-// Unsubscribe user from a product alert
+// @route DELETE /api/users/alerts/:productId (Unsubscribe from alert)
+// @access Private
 router.delete('/alerts/:productId', protect, unsubscribeFromAlert);
-
-// ----------------------------------------------------
-// --- ADMIN ROUTES ---
-// ----------------------------------------------------
-
-// Admin feature: List all users
-router.route('/').get(protect, admin, getUsers); 
 
 module.exports = router;

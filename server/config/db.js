@@ -1,17 +1,19 @@
+// tramar/server/config/db.js (Assuming this is the path)
 
-// Database configuration file
 const mongoose = require('mongoose');
 
 const connectDB = async () => {
   try {
-    const conn = await mongoose.connect(process.env.MONGO_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    // 🟢 FIX 1: Removed deprecated options (useNewUrlParser, useUnifiedTopology)
+    const conn = await mongoose.connect(process.env.MONGO_URI);
 
-    console.log(`MongoDB Connected: ${conn.connection.host}`);
+    // 🟢 OPTIONAL FIX 2: Set strictQuery to false for cleaner development (Mongoose 7+)
+    mongoose.set('strictQuery', false);
+
+    console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
   } catch (error) {
-    console.error(`Error: ${error.message}`);
+    console.error(`❌ Error connecting to MongoDB: ${error.message}`);
+    // Exit process with failure code
     process.exit(1);
   }
 };

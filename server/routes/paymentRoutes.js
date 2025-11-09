@@ -1,25 +1,32 @@
+// tramar/server/routes/paymentRoutes.js
 
-// Routes for payment management
 const express = require('express');
 const router = express.Router();
 const { 
-  createPaymentIntent,
-  stripeWebhook
+    createPaymentIntent,
+    stripeWebhook
 } = require('../controllers/paymentController');
 const { protect } = require('../middleware/auth');
 
-// Protected routes
+// --- /api/payment/create-payment-intent ---
 router.post(
-  '/create-payment-intent',
-  protect,
-  createPaymentIntent
+    // @route POST /api/payment/create-payment-intent
+    // @access Private
+    '/create-payment-intent',
+    protect,
+    createPaymentIntent
 );
 
-// Stripe webhook - needs raw body
+// --- /api/payment/webhook ---
+// Stripe webhook requires the raw body buffer to verify the signature.
+// This route MUST NOT use the standard express.json() parser.
 router.post(
-  '/webhook',
-  express.raw({ type: 'application/json' }),
-  stripeWebhook
+    // @route POST /api/payment/webhook
+    // @access Public (Stripe server-to-server)
+    '/webhook',
+    // 🟢 FIX 1: Using a JSON limit option is good practice, although not strictly necessary for functionality.
+    express.raw({ type: 'application/json', limit: '5mb' }), 
+    stripeWebhook
 );
 
 module.exports = router;
