@@ -29,6 +29,9 @@ import HandshakeIcon from '@mui/icons-material/Handshake';
 const CTA_BUTTON_COLOR = '#c24d2c';
 const CTA_BUTTON_HOVER_COLOR = '#a64228'; // A slightly darker shade for hover effect
 
+// 🟢 NEW CONSTANT: Image URL for the background
+const HERO_IMAGE_URL = '/images/key-hero.jpg'; 
+
 const AboutPage = () => {
     const theme = useTheme();
 
@@ -38,33 +41,44 @@ const AboutPage = () => {
     return (
         <Box sx={{ bgcolor: theme.palette.background.default }}>
             
-            {/* --- Section 1: Hero Header & Value Proposition (Full Width BG) --- */}
+            {/* --- Section 1: Hero Header & Value Proposition (Full Width BG Image) --- */}
+            {/* 🔥 REFACTORED: Using image as a full background for the hero section */}
             <Box sx={{ 
                 textAlign: 'center', 
                 py: { xs: 8, md: 12 },
-                // Using custom.navbarBg color defined in Theme.js
-                bgcolor: theme.palette.custom.navbarBg, 
-                mb: { xs: 6, md: 8 }
+                mb: { xs: 6, md: 8 },
+                // 🟢 NEW: Set image as background for the entire box
+                backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)), url(${HERO_IMAGE_URL})`, 
+                backgroundSize: 'cover', 
+                backgroundPosition: 'center',
+                backgroundAttachment: 'fixed', // Optional: for a parallax effect
+                // Use a defined minimum height to ensure the image displays well
+                minHeight: { xs: '70vh', md: '80vh' }
             }}>
                 <Container maxWidth="md">
                     <Typography 
                         variant="h1" 
                         component="h1" 
-                        color="primary"
+                        // 🔥 FIX: Changed color to white for contrast against the dark background
+                        color="#ffffff" 
                         fontWeight={800}
                         // Styles derived from Theme.js for sharpness/weight
                         sx={{ mb: 2, fontSize: { xs: '3rem', sm: '4rem', md: '5rem' } }}
                     >
                         Building PCs Should Be Simple.
                     </Typography>
-                    <Typography variant="h5" color="text.secondary" sx={{ fontSize: { xs: '1.1rem', sm: '1.4rem' } }}>
+                    <Typography 
+                        variant="h5" 
+                        // 🔥 FIX: Changed color to a lighter shade for contrast
+                        color="grey.200" 
+                        sx={{ fontSize: { xs: '1.1rem', sm: '1.4rem' } }}
+                    >
                         Tramar is your dedicated source for custom-built computers, eliminating compatibility errors with intelligent, real-time validation.
                     </Typography>
                     <Button 
                         component={RouterLink} 
                         to="/builder" 
                         variant="contained" 
-                        // The 'color="secondary"' prop is kept, but its default color is overridden by the 'sx' styles below
                         color="secondary"
                         size="large"
                         startIcon={<BuildIcon />}
@@ -88,6 +102,9 @@ const AboutPage = () => {
                     >
                         Start Your Build Now
                     </Button>
+                    
+                    {/* 🔥 REMOVED: The standalone <img> tag is no longer needed */}
+                    
                 </Container>
             </Box>
 

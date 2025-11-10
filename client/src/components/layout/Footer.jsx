@@ -13,8 +13,11 @@ import FacebookIcon from '@mui/icons-material/Facebook';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import InstagramIcon from '@mui/icons-material/Instagram';
 
-// 🟢 FIX: Custom color for footer titles changed to #f8b400
+// 🟢 FIX: Custom color for footer titles changed to #f8b400 (This is kept)
 const FOOTER_TITLE_COLOR = '#f8b400';
+
+// 🔥 FIX: Constant for the requested background color updated to #142d4c
+const FOOTER_BACKGROUND_COLOR = '#142d4c'; 
 
 const Footer = () => {
     const theme = useTheme();
@@ -60,7 +63,9 @@ const Footer = () => {
         <Box 
             component="footer" 
             sx={{ 
-                bgcolor: theme.palette.grey[900], 
+                // 🔥 APPLIED NEW COLOR: #142d4c
+                bgcolor: FOOTER_BACKGROUND_COLOR, 
+                // Ensuring default text color remains light for contrast
                 color: theme.palette.grey[300], 
                 py: { xs: 6, md: 8 } 
             }}
@@ -84,6 +89,7 @@ const Footer = () => {
                                     href={item.href} 
                                     target="_blank"
                                     sx={{ 
+                                        // Social icons use light color
                                         color: theme.palette.grey[300],
                                         '&:hover': { color: theme.palette.primary.main }
                                     }}
@@ -109,6 +115,7 @@ const Footer = () => {
                                             variant="body2"
                                             sx={{ 
                                                 textDecoration: 'none', 
+                                                // Link text uses light color
                                                 color: theme.palette.grey[400],
                                                 '&:hover': { color: theme.palette.primary.light, textDecoration: 'underline' }
                                             }}
@@ -124,8 +131,20 @@ const Footer = () => {
                 </Grid>
 
                 {/* Copyright & Bottom Bar */}
-                <Box sx={{ borderTop: `1px solid ${theme.palette.grey[700]}`, mt: 6, pt: 3, textAlign: 'center' }}>
-                    <Typography variant="body2" color="text.secondary">
+                <Box 
+                    sx={{ 
+                        // Divider color adjusted for the dark background
+                        borderTop: `1px solid ${theme.palette.grey[600]}`, 
+                        mt: 6, 
+                        pt: 3, 
+                        textAlign: 'center' 
+                    }}
+                >
+                    <Typography 
+                        variant="body2" 
+                        // Copyright text uses light color
+                        color={theme.palette.grey[400]}
+                    >
                         © {new Date().getFullYear()} Tramar PC. All rights reserved.
                     </Typography>
                 </Box>
