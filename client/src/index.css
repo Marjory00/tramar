@@ -1,0 +1,75 @@
+/*
+ * tramar/client/src/index.css
+ * Global styles and design defaults for Tramar PC Builder.
+ * Optimized for use with Material UI (MUI).
+ */
+
+/* 1. Global Box Model Reset (Crucial for predictability) */
+*, *::before, *::after {
+    /* **MUST KEEP**: Ensures padding and border don't increase the total element width */
+    box-sizing: border-box; 
+    /* ✅ FIX: Removed margin: 0 and padding: 0 here, as Material UI's CssBaseline 
+       handles the body/html reset, and a universal element reset can cause issues 
+       with default browser padding on list items, etc. */
+}
+
+/* 🟢 Global CSS variables for backgrounds/images and themes */
+:root {
+    /* Renamed for better specificity/clarity */
+    --tramar-hero-image-url: url('/images/pc-builder-hero.jpg'); 
+    
+    /* Centralize the focus outline color for maintenance */
+    --focus-ring-color: #155263; 
+}
+
+/* 2. Base HTML and Body Styles */
+html {
+    /* Enforce smooth scrolling globally */
+    scroll-behavior: smooth;
+}
+
+body {
+    /* Prevent horizontal scroll issues due to content overflow */
+    overflow-x: hidden; 
+    /* Minimal fallback font setup - MUI CssBaseline handles the actual application */
+    font-family: 'Roboto', 'Montserrat', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* 3. React Root Structure for Full-Height Layouts (Sticky Footer Pattern) */
+#root {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Ensures the wrapper covers full viewport */
+}
+
+/* Main content area class, applied to the <Box component="main"> in App.jsx */
+.main-content {
+    flex-grow: 1; /* Allows content to expand and push the footer down */
+}
+
+/* 4. Global Link Reset for consistency with MUI theme */
+a {
+    color: inherit; /* Inherit color from parent */
+    text-decoration: none; /* Remove underline */
+}
+
+/* 5. Accessibility Enhancement (Focus States) */
+/* Suppress default focus ring for non-keyboard interaction (mouse clicks) */
+:focus:not(:focus-visible) {
+    outline: none;
+}
+
+/* Apply highly visible focus ring only for keyboard navigation */
+:focus-visible {
+    /* ✅ FIX: Using the centralized CSS variable */
+    outline: 3px solid var(--focus-ring-color); 
+    outline-offset: 2px;
+}
+
+/* 6. Component-Specific Helpers (If needed) */
+.homepage-content {
+    /* Optional: A simple class to target the main content box in HomePage.jsx 
+       for future specific layout overrides */
+}

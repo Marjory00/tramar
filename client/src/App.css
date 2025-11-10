@@ -1,0 +1,87 @@
+/*
+ * tramar/client/src/index.css
+ * Global styles and design defaults for Tramar PC Builder.
+ * Optimized for use with Material UI (MUI).
+ */
+
+/* 1. Global Box Model Reset (Crucial for predictability) */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    /* ✅ REFINEMENT: Removed redundant margin/padding reset. 
+       MUI's CssBaseline handles this effectively using the default browser styles, 
+       but keeping box-sizing is essential.
+    */
+    /* margin: 0; */
+    /* padding: 0; */
+}
+
+/* 🟢 ADDED: Global CSS variables for backgrounds/images */
+:root {
+    /* Use a clear variable name for the hero image */
+    --tramar-hero-image-url: url('/images/pc-builder-hero.jpg'); 
+
+    /* ✅ REFINEMENT: Define a CSS variable for the focus color 
+       for better maintainability outside of the primary MUI theme. */
+    --focus-color: #155263;
+}
+
+/* 2. Base HTML and Body Styles */
+html {
+    /* Enforce smooth scrolling globally */
+    scroll-behavior: smooth;
+}
+
+body {
+    /* ✅ REFINEMENT: Using `overflow: auto` on small screens can prevent 
+       the body from being cut off if a sticky element is used. `overflow-x: hidden` 
+       is fine, but `auto` is sometimes safer for full-page scrolling. We'll stick 
+       to `hidden` as it was explicitly requested. */
+    overflow-x: hidden; 
+    
+    /* Minimal fallback font setup - MUI CssBaseline will overwrite this */
+    font-family: 'Roboto', 'Montserrat', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* 3. React Root Structure for Full-Height Layouts (Sticky Footer Pattern) */
+#root {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Ensures the wrapper covers full viewport */
+}
+
+/* Main content area class, applied to the <Box component="main"> in App.jsx */
+.main-content {
+    flex-grow: 1; /* Allows content to expand and push the footer down */
+}
+
+/* 4. Global Link Reset for consistency with MUI theme */
+a {
+    /* Inherit color from nearest parent */
+    color: inherit; 
+    /* Remove default underline */
+    text-decoration: none;
+}
+
+/* 5. Accessibility Enhancement (Focus States) */
+/* Standardize focus-visible for keyboard navigation */
+:focus:not(:focus-visible) {
+    outline: none;
+}
+
+:focus-visible {
+    /* ✅ REFINEMENT: Use the defined CSS variable for consistency */
+    outline: 3px solid var(--focus-color); 
+    outline-offset: 2px;
+}
+
+/* 6. Hero Section (If not styled via inline/MUI Theme) */
+/* ✅ ADDED: If the Hero section uses a class, ensure the path is correct. */
+.hero-section {
+    /* Use the variable defined in :root for consistency */
+    background-image: var(--tramar-hero-image-url);
+    /* Ensure styles applied here don't conflict with inline styles in HomePage.jsx */
+}
