@@ -1,5 +1,3 @@
-// tramar/client/src/pages/HomePage.jsx
-
 import React, { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 
@@ -33,6 +31,13 @@ import ProductCard from '../components/product/ProductCard';
 // --- Universal Asset Path Prefix ---
 const publicPath = process.env.PUBLIC_URL;
 
+// 🟢 CONSTANT: Custom color for component buttons
+const COMPONENT_BUTTON_BG = '#35495e';
+
+// 🔴 CONSTANT: Custom color for Hero CTA and Blog CTA (same color used)
+const CTA_COLOR = '#c24d2c';
+const CTA_HOVER_COLOR = '#a64228';
+
 // --- Mock Data for Showcase ---
 const allMockProducts = [
     { _id: '1', name: 'Intel Core i7-14700K', price: 399.99, category: 'CPU', countInStock: 15, compatibilityKey: 'LGA 1700', image: `${publicPath}/images/products/part1.jpg` },
@@ -56,9 +61,6 @@ const HomePage = () => {
         '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', '"Helvetica Neue"', 'Arial', 'sans-serif'
     ].join(',');
     
-    // Ensure we have a dark background color for contrast
-    const darkBgColor = theme.palette.custom?.darkBg || theme.palette.grey[900];
-
     return (
         <Box component="div" className="homepage-content">
             
@@ -108,20 +110,21 @@ const HomePage = () => {
                         component={RouterLink} 
                         to="/builder" 
                         variant="contained" 
-                        color="secondary"
                         size="large" 
                         sx={{ 
                             mt: 4, 
+                            // Background color from previous requests
+                            backgroundColor: CTA_COLOR,
                             boxShadow: theme.shadows[15],
                             fontWeight: 700,
                             py: 2,
                             px: 6,
                             borderRadius: 1,
                             fontSize: '1.1rem',
-                            transition: 'transform 0.3s, box-shadow 0.3s',
+                            transition: 'transform 0.3s, box-shadow 0.3s, background-color 0.3s',
                             '&:hover': {
-                                backgroundColor: theme.palette.secondary.dark,
-                                transform: 'scale(1.05)', // Better hover effect
+                                backgroundColor: CTA_HOVER_COLOR, 
+                                transform: 'scale(1.05)', 
                                 boxShadow: theme.shadows[20],
                             }
                         }}
@@ -180,7 +183,6 @@ const HomePage = () => {
                         <Grid item xs={12} sm={6} md={4}>
                             <Card elevation={6} sx={{ height: '100%', p: 3, borderTop: `4px solid ${theme.palette.primary.main}` }}>
                                 <CardContent sx={{ textAlign: 'center' }}>
-                                    {/* Replaced FavoriteBorderIcon with PeopleAltIcon */}
                                     <PeopleAltIcon color="primary" sx={{ fontSize: 50, mb: 2 }} />
                                     <Typography variant="h6" component="h5" fontWeight="bold" gutterBottom sx={ {fontFamily: systemFontStack} }>
                                         Curated Community Plans
@@ -195,7 +197,7 @@ const HomePage = () => {
                 </Container>
             </Box>
 
-            {/* --- Section 3: Shop by Component (Improved Styling) --- */}
+            {/* --- Section 3: Shop by Component (Fixed Color) --- */}
             <Box sx={{ py: { xs: 4, md: 8 }, bgcolor: theme.palette.grey[50] }}>
                 <Container maxWidth="lg">
                     <Typography 
@@ -210,18 +212,19 @@ const HomePage = () => {
                     
                     <Grid container spacing={2} sx={{ mb: 6 }} justifyContent="center">
                         {['CPU', 'GPU', 'Motherboard', 'RAM', 'Storage', 'PSU', 'Case', 'Cooler'].map(category => (
-                            // Responsive layout: 2 per row on small, 3 on tablet, 4 on desktop
                             <Grid item xs={6} sm={4} md={3} key={category}>
                                 <Card 
                                     elevation={0} // Flat look
                                     sx={{ 
                                         p: 2, 
-                                        backgroundColor: darkBgColor, 
+                                        // Background color from previous requests
+                                        backgroundColor: COMPONENT_BUTTON_BG, 
                                         transition: 'background-color 0.3s, transform 0.2s',
                                         height: '100%',
                                         textAlign: 'center', 
                                         borderRadius: 1, // Subtle rounding
                                         '&:hover': {
+                                            // Optional: Use primary color on hover
                                             backgroundColor: theme.palette.primary.main, 
                                             transform: 'scale(1.03)',
                                             boxShadow: theme.shadows[4]
@@ -235,6 +238,7 @@ const HomePage = () => {
                                     >
                                         <Typography 
                                             variant="subtitle1" 
+                                            // Ensure text color remains white on the dark button
                                             sx={{ color: 'white', fontWeight: 'bold', fontFamily: systemFontStack }}
                                         >
                                             {category}
@@ -265,10 +269,8 @@ const HomePage = () => {
                         </Box>
                     ) : (
                         <Grid container spacing={4}>
-                            {/* Layout: 1 per row on mobile, 2 on tablet, 3 on small desktop, 4 on large desktop */}
                             {products.map(product => (
                                 <Grid item xs={12} sm={6} md={4} lg={3} key={product._id}>
-                                    {/* Assuming ProductCard is well-styled */}
                                     <ProductCard product={product} /> 
                                 </Grid>
                             ))}
@@ -289,7 +291,6 @@ const HomePage = () => {
                         <Inventory2OutlinedIcon color="primary" sx={{ mr: 1, fontSize: 35 }} /> Just Landed: New Arrivals
                     </Typography>
                     <Grid container spacing={4}>
-                        {/* Layout: 1 per row on mobile, 2 on tablet, 3 on desktop */}
                         {newArrivals.map(product => (
                             <Grid item xs={12} sm={6} md={4} key={product._id}>
                                 <ProductCard product={product} />
@@ -323,8 +324,6 @@ const HomePage = () => {
                         <NewspaperIcon color="primary" sx={{ mr: 1, fontSize: 35 }} /> Latest News & Guides
                     </Typography>
                     <Grid container spacing={4} justifyContent="center">
-                        {/* Layout: 1 per row on mobile, 2 on tablet, 3 on desktop */}
-                        {/* Mock Blog Posts */}
                         <Grid item xs={12} sm={6} md={4}>
                             <Card sx={{ height: '100%', boxShadow: 3, transition: 'transform 0.3s', '&:hover': { transform: 'translateY(-4px)' } }}>
                                 <CardContent>
@@ -354,7 +353,18 @@ const HomePage = () => {
                         </Grid>
                     </Grid>
                     <Box textAlign="center" sx={{ mt: 5 }}>
-                        <Button component={RouterLink} to="/blog" variant="contained" color="secondary">
+                        <Button 
+                            component={RouterLink} 
+                            to="/blog" 
+                            variant="contained" 
+                            // 🟢 FIX: Applying custom color to the "Visit the Blog" button
+                            sx={{
+                                backgroundColor: CTA_COLOR,
+                                '&:hover': {
+                                    backgroundColor: CTA_HOVER_COLOR,
+                                }
+                            }}
+                        >
                             Visit the Blog
                         </Button>
                     </Box>

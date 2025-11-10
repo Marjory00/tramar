@@ -1,181 +1,137 @@
-// tramar/client/src/components/layout/Footer.jsx
-
 import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-
-// Import Material UI components
 import { 
     Box, 
     Container, 
     Grid, 
     Typography, 
     Link, 
-    IconButton, 
-    Divider, 
-    useTheme 
+    IconButton,
+    useTheme
 } from '@mui/material';
-
-// Import Material UI Icons
-import BuildIcon from '@mui/icons-material/Build';
-import EmailIcon from '@mui/icons-material/Email';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import InstagramIcon from '@mui/icons-material/Instagram';
-import GitHubIcon from '@mui/icons-material/GitHub';
+
+// 🟢 FIX: Custom color for footer titles changed to #f8b400
+const FOOTER_TITLE_COLOR = '#f8b400';
 
 const Footer = () => {
     const theme = useTheme();
 
-    // 🟢 CRITICAL FIX: Define the custom white color access safely
-    const whiteTextColor = theme.palette.custom.lightText;
-    
-    // Define the style for footer links
-    const footerLinkStyle = { 
-        // 🟢 FIX 1: Use the correctly accessed custom white color property
-        color: whiteTextColor, 
-        opacity: 0.75, 
-        textDecoration: 'none',
-        transition: 'opacity 0.3s',
-        '&:hover': { 
-            opacity: 1, 
-            // 🟢 FIX 2: Ensure the hover color remains the custom white text color
-            color: whiteTextColor, 
-            textDecoration: 'none', 
-        } 
-    };
+    const socialLinks = [
+        { icon: <FacebookIcon />, href: '#' },
+        { icon: <TwitterIcon />, href: '#' },
+        { icon: <InstagramIcon />, href: '#' },
+    ];
+
+    // Array of link groups for the footer
+    const linkGroups = [
+        {
+            title: 'Shop',
+            links: [
+                { name: 'PC Builder', to: '/builder' },
+                { name: 'New Arrivals', to: '/products?sort=newest' },
+                { name: 'Deals', to: '/deals' },
+                { name: 'All Products', to: '/products' },
+            ],
+        },
+        {
+            title: 'Help & Support',
+            links: [
+                { name: 'Contact Us', to: '/contact' },
+                { name: 'FAQ', to: '/faq' },
+                { name: 'Shipping Policy', to: '/shipping' },
+                { name: 'Return Policy', to: '/returns' },
+            ],
+        },
+        {
+            title: 'Company',
+            links: [
+                { name: 'About Tramar', to: '/about' },
+                { name: 'Careers', to: '/careers' },
+                { name: 'Blog', to: '/blog' },
+                { name: 'Terms of Service', to: '/terms' },
+            ],
+        },
+    ];
 
     return (
         <Box 
             component="footer" 
-            sx={{
-                // Uses the custom 'dark' color defined in Theme.js
-                backgroundColor: theme.palette.custom.darkBg, 
-                // 🟢 CRITICAL FIX 3: Set Base color to the custom white text property
-                color: whiteTextColor,
-                py: 5,
-                flexShrink: 0, 
-                // Primary color accent border
-                borderTop: `5px solid ${theme.palette.primary.main}`, 
+            sx={{ 
+                bgcolor: theme.palette.grey[900], 
+                color: theme.palette.grey[300], 
+                py: { xs: 6, md: 8 } 
             }}
         >
             <Container maxWidth="lg">
                 <Grid container spacing={4}>
                     
-                    {/* Column 1: Branding & Copyright */}
+                    {/* Brand Info & Socials */}
                     <Grid item xs={12} md={4}>
-                        {/* Title: uses 'whiteTextColor' via sx prop for guaranteed visibility */}
-                        <Typography variant="h6" component="h5" 
-                            sx={{ color: whiteTextColor, fontWeight: 700, mb: 2 }}
-                        >
-                            {/* Icon uses primary theme color */}
-                            <BuildIcon color="primary" sx={{ mr: 1, verticalAlign: 'middle' }} /> 
-                            Tramar PC Builder
+                        <Typography variant="h5" gutterBottom sx={{ color: FOOTER_TITLE_COLOR, fontWeight: 700 }}>
+                            Tramar PC
                         </Typography>
-                        {/* Text: inherits whiteTextColor from the parent Box */}
-                        <Typography variant="body2" sx={{ opacity: 0.75, mb: 1 }} color="inherit">
-                            Building the future, one component at a time.
+                        <Typography variant="body2" sx={{ mb: 2 }}>
+                            Build Smarter. Game Faster. The ultimate platform for custom PC building with real-time compatibility checking.
                         </Typography>
-                        <Typography variant="caption" sx={{ opacity: 0.75 }} color="inherit">
-                            &copy; {new Date().getFullYear()} Tramar Inc. All rights reserved.
-                        </Typography>
-                    </Grid>
-
-                    {/* Column 2: Quick Links */}
-                    <Grid item xs={6} md={2}>
-                        <Typography variant="subtitle1" color="primary" sx={{ mb: 2, fontWeight: 700 }}>Shop</Typography>
-                        <Box component="ul" sx={{ listStyle: 'none', p: 0, m: 0 }}>
-                            {/* Links use the defined footerLinkStyle */}
-                            <li><Link component={RouterLink} to="/products" sx={footerLinkStyle}>All Products</Link></li>
-                            <li><Link component={RouterLink} to="/builder" sx={footerLinkStyle}>PC Builder</Link></li>
-                            <li><Link component={RouterLink} to="/cart" sx={footerLinkStyle}>View Cart</Link></li>
-                            <li><Link component={RouterLink} to="/login" sx={footerLinkStyle}>Account</Link></li>
+                        <Box>
+                            {socialLinks.map((item, index) => (
+                                <IconButton 
+                                    key={index} 
+                                    aria-label={item.icon.type.displayName}
+                                    href={item.href} 
+                                    target="_blank"
+                                    sx={{ 
+                                        color: theme.palette.grey[300],
+                                        '&:hover': { color: theme.palette.primary.main }
+                                    }}
+                                >
+                                    {item.icon}
+                                </IconButton>
+                            ))}
                         </Box>
                     </Grid>
+
+                    {/* Link Sections */}
+                    {linkGroups.map((group, index) => (
+                        <Grid item xs={6} sm={4} md={2} key={index}>
+                            <Typography variant="h6" gutterBottom sx={{ color: FOOTER_TITLE_COLOR, fontWeight: 600 }}>
+                                {group.title}
+                            </Typography>
+                            <Box component="ul" sx={{ listStyle: 'none', p: 0 }}>
+                                {group.links.map((link, linkIndex) => (
+                                    <li key={linkIndex} style={{ margin: theme.spacing(0.5, 0) }}>
+                                        <Link
+                                            component={RouterLink}
+                                            to={link.to}
+                                            variant="body2"
+                                            sx={{ 
+                                                textDecoration: 'none', 
+                                                color: theme.palette.grey[400],
+                                                '&:hover': { color: theme.palette.primary.light, textDecoration: 'underline' }
+                                            }}
+                                        >
+                                            {link.name}
+                                        </Link>
+                                    </li>
+                                ))}
+                            </Box>
+                        </Grid>
+                    ))}
                     
-                    {/* Column 3: Company & Support */}
-                    <Grid item xs={6} md={3}>
-                        <Typography variant="subtitle1" color="primary" sx={{ mb: 2, fontWeight: 700 }}>Company</Typography>
-                        <Box component="ul" sx={{ listStyle: 'none', p: 0, m: 0 }}>
-                            <li><Link component={RouterLink} to="/about" sx={footerLinkStyle}>About Us</Link></li>
-                            <li><Link component={RouterLink} to="/contact" sx={footerLinkStyle}>Contact Us</Link></li>
-                            <li><Link component={RouterLink} to="/privacy" sx={footerLinkStyle}>Privacy Policy</Link></li>
-                            <li><Link component={RouterLink} to="/terms" sx={footerLinkStyle}>Terms</Link></li>
-                        </Box>
-                    </Grid>
-
-                    {/* Column 4: Social Media & Contact */}
-                    <Grid item xs={12} md={3}>
-                        <Typography variant="subtitle1" color="primary" sx={{ mb: 2, fontWeight: 700 }}>Connect</Typography>
-                        
-                        {/* Contact Email Link */}
-                        <Link 
-                            href="mailto:support@tramar.com" 
-                            sx={{ ...footerLinkStyle, display: 'flex', alignItems: 'center', mb: 3 }}
-                        >
-                            <EmailIcon color="primary" sx={{ mr: 1 }} />
-                            support@tramar.com
-                        </Link>
-                        
-                        {/* Social Icons */}
-                        <Box sx={{ display: 'flex', gap: 1 }}>
-                            <IconButton 
-                                component="a" 
-                                href="https://facebook.com" 
-                                target="_blank" 
-                                rel="noopener noreferrer" 
-                                aria-label="Facebook"
-                                // Use the defined whiteTextColor here
-                                sx={{ color: whiteTextColor, '&:hover': { color: theme.palette.primary.main } }}
-                            >
-                                <FacebookIcon />
-                            </IconButton>
-                            <IconButton 
-                                component="a" 
-                                href="https://twitter.com" 
-                                target="_blank" 
-                                rel="noopener noreferrer" 
-                                aria-label="Twitter"
-                                sx={{ color: whiteTextColor, '&:hover': { color: theme.palette.primary.main } }}
-                            >
-                                <TwitterIcon />
-                            </IconButton>
-                            <IconButton 
-                                component="a" 
-                                href="https://instagram.com" 
-                                target="_blank" 
-                                rel="noopener noreferrer" 
-                                aria-label="Instagram"
-                                sx={{ color: whiteTextColor, '&:hover': { color: theme.palette.primary.main } }}
-                            >
-                                <InstagramIcon />
-                            </IconButton>
-                            <IconButton 
-                                component="a" 
-                                href="https://github.com/Marjory00" 
-                                target="_blank" 
-                                rel="noopener noreferrer" 
-                                aria-label="GitHub"
-                                sx={{ color: whiteTextColor, '&:hover': { color: theme.palette.primary.main } }}
-                            >
-                                <GitHubIcon />
-                            </IconButton>
-                        </Box>
-                    </Grid>
                 </Grid>
-                
-                {/* Horizontal Rule for separation */}
-                <Divider sx={{ my: 4, bgcolor: 'rgba(255, 255, 255, 0.2)' }} /> 
 
-                {/* Bottom Row - Final Copyright text/extra info */}
-                <Grid container>
-                    <Grid item xs={12} textAlign="center">
-                        <Typography variant="caption" sx={{ opacity: 0.75 }} color="inherit">
-                            Proudly built for PC enthusiasts.
-                        </Typography>
-                    </Grid>
-                </Grid>
+                {/* Copyright & Bottom Bar */}
+                <Box sx={{ borderTop: `1px solid ${theme.palette.grey[700]}`, mt: 6, pt: 3, textAlign: 'center' }}>
+                    <Typography variant="body2" color="text.secondary">
+                        © {new Date().getFullYear()} Tramar PC. All rights reserved.
+                    </Typography>
+                </Box>
             </Container>
         </Box>
     );
 };
+
 export default Footer;
