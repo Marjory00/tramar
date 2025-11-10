@@ -25,6 +25,10 @@ import CreditCardIcon from '@mui/icons-material/CreditCard';
 // 🔥 FIX: Replaced FavoriteBorderIcon (Heart) with HandshakeIcon (Professional)
 import HandshakeIcon from '@mui/icons-material/Handshake'; 
 
+// 🟢 NEW CONSTANTS: Custom colors for the CTA button
+const CTA_BUTTON_COLOR = '#c24d2c';
+const CTA_BUTTON_HOVER_COLOR = '#a64228'; // A slightly darker shade for hover effect
+
 const AboutPage = () => {
     const theme = useTheme();
 
@@ -60,10 +64,27 @@ const AboutPage = () => {
                         component={RouterLink} 
                         to="/builder" 
                         variant="contained" 
+                        // The 'color="secondary"' prop is kept, but its default color is overridden by the 'sx' styles below
                         color="secondary"
                         size="large"
                         startIcon={<BuildIcon />}
-                        sx={{ mt: 4, py: 1.5, px: 5, fontWeight: 700, borderRadius: 1 }}
+                        sx={{ 
+                            mt: 4, 
+                            py: 1.5, 
+                            px: 5, 
+                            fontWeight: 700, 
+                            borderRadius: 1,
+                            // 🟢 FIX: Applying the custom background color
+                            backgroundColor: CTA_BUTTON_COLOR,
+                            // 🟢 NEW: Setting the text/icon color to white for contrast
+                            color: '#ffffff',
+                            // 🟢 ADD: Custom hover color for better visual feedback
+                            '&:hover': {
+                                backgroundColor: CTA_BUTTON_HOVER_COLOR,
+                                // Ensure text/icon remains white on hover
+                                color: '#ffffff', 
+                            },
+                        }}
                     >
                         Start Your Build Now
                     </Button>
@@ -142,48 +163,48 @@ const AboutPage = () => {
                     
                     {/* Feature Card Template */}
                     {['info', 'success', 'primary', 'secondary'].map((color, index) => (
-                         <Grid item xs={12} sm={6} lg={3} key={index}>
-                            <Card 
-                                elevation={8} 
-                                sx={{ 
-                                    height: '100%', 
-                                    borderTop: '6px solid', 
-                                    borderColor: `${color}.main`, 
-                                    transition: 'transform 0.3s, box-shadow 0.3s', 
-                                    '&:hover': { 
-                                        transform: 'translateY(-8px)', 
-                                        boxShadow: theme.shadows[12] 
-                                    },
-                                    borderRadius: 1 
-                                }}
-                            >
-                                <CardContent sx={{ p: 4, textAlign: 'center' }}>
-                                    {/* Icon & Title based on feature */}
-                                    {index === 0 && <SettingsIcon color="info" sx={{ fontSize: 48, mb: 2 }} />}
-                                    {index === 1 && <FlashOnIcon color="success" sx={{ fontSize: 48, mb: 2 }} />}
-                                    {index === 2 && <GroupIcon color="primary" sx={{ fontSize: 48, mb: 2 }} />}
-                                    {index === 3 && <CreditCardIcon color="secondary" sx={{ fontSize: 48, mb: 2 }} />}
+                           <Grid item xs={12} sm={6} lg={3} key={index}>
+                                <Card 
+                                    elevation={8} 
+                                    sx={{ 
+                                        height: '100%', 
+                                        borderTop: '6px solid', 
+                                        borderColor: `${color}.main`, 
+                                        transition: 'transform 0.3s, box-shadow 0.3s', 
+                                        '&:hover': { 
+                                            transform: 'translateY(-8px)', 
+                                            boxShadow: theme.shadows[12] 
+                                        },
+                                        borderRadius: 1 
+                                    }}
+                                >
+                                    <CardContent sx={{ p: 4, textAlign: 'center' }}>
+                                        {/* Icon & Title based on feature */}
+                                        {index === 0 && <SettingsIcon color="info" sx={{ fontSize: 48, mb: 2 }} />}
+                                        {index === 1 && <FlashOnIcon color="success" sx={{ fontSize: 48, mb: 2 }} />}
+                                        {index === 2 && <GroupIcon color="primary" sx={{ fontSize: 48, mb: 2 }} />}
+                                        {index === 3 && <CreditCardIcon color="secondary" sx={{ fontSize: 48, mb: 2 }} />}
 
-                                    <Typography 
-                                        variant="h6" 
-                                        color={`${color}.dark`} 
-                                        sx={{ mb: 1 }} 
-                                        fontWeight="bold"
-                                    >
-                                        {index === 0 && 'Real-time Validation'}
-                                        {index === 1 && 'Performance Scores'}
-                                        {index === 2 && 'Community Builds'}
-                                        {index === 3 && 'Secure Checkout'}
-                                    </Typography>
-                                    <Typography variant="body2" color="text.secondary">
-                                        {index === 0 && 'Instant checks on socket type, memory generation, and power draw ensure every component works together flawlessly.'}
-                                        {index === 1 && 'See predicted FPS/Benchmark scores for your custom build before you finalize, maximizing value for your budget.'}
-                                        {index === 2 && 'Browse, clone, and share expert-optimized builds. Learn from the community and get feedback on your plan.'}
-                                        {index === 3 && 'Fast and secure checkout via tokenized payment processing, ensuring your financial information is always protected.'}
-                                    </Typography>
-                                </CardContent>
-                            </Card>
-                        </Grid>
+                                        <Typography 
+                                            variant="h6" 
+                                            color={`${color}.dark`} 
+                                            sx={{ mb: 1 }} 
+                                            fontWeight="bold"
+                                        >
+                                            {index === 0 && 'Real-time Validation'}
+                                            {index === 1 && 'Performance Scores'}
+                                            {index === 2 && 'Community Builds'}
+                                            {index === 3 && 'Secure Checkout'}
+                                        </Typography>
+                                        <Typography variant="body2" color="text.secondary">
+                                            {index === 0 && 'Instant checks on socket type, memory generation, and power draw ensure every component works together flawlessly.'}
+                                            {index === 1 && 'See predicted FPS/Benchmark scores for your custom build before you finalize, maximizing value for your budget.'}
+                                            {index === 2 && 'Browse, clone, and share expert-optimized builds. Learn from the community and get feedback on your plan.'}
+                                            {index === 3 && 'Fast and secure checkout via tokenized payment processing, ensuring your financial information is always protected.'}
+                                        </Typography>
+                                    </CardContent>
+                                </Card>
+                            </Grid>
                     ))}
                     
                 </Grid>
